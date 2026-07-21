@@ -178,7 +178,7 @@ function goToQuestion(index) {
   assessmentStore.goToQuestion(index)
   const currentQuestion = assessmentStore.currentQuestion
   selectedAnswer.value = assessmentStore.userAnswers[currentQuestion.id]
-  showAnswerSheet.value = false
+  // 不在这里关闭答题卡，仅当用户点击 X 或非答题卡区域时才收起
 }
 
 // 提交评估
