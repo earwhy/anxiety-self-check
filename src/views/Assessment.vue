@@ -1,6 +1,14 @@
 <template>
   <div class="assessment-container">
     <a-card class="assessment-card">
+      <!-- 顶部退出栏 -->
+      <div class="assessment-header">
+        <a-button class="exit-btn" @click="handleExit">
+          <template #icon><CloseOutlined /></template>
+          退出
+        </a-button>
+      </div>
+
       <!-- 进度条 -->
       <div class="progress-section">
         <div class="progress-header">
@@ -47,14 +55,14 @@
 
       <!-- 导航按钮 -->
       <div class="navigation-section">
-        <a-button 
-          v-if="store.currentQuestionIndex > 0" 
-          @click="handlePrevious"
-        >
-          上一题
-        </a-button>
-        
-        <a-space v-else></a-space>
+        <div class="nav-side nav-left">
+          <a-button 
+            v-if="store.currentQuestionIndex > 0" 
+            @click="handlePrevious"
+          >
+            上一题
+          </a-button>
+        </div>
 
         <div class="question-dots">
           <span
@@ -69,29 +77,31 @@
           />
         </div>
 
-        <a-button 
-          v-if="store.currentQuestionIndex < store.totalQuestions - 1"
-          type="primary"
-          @click="handleNext"
-          :disabled="!store.hasAnsweredCurrent"
-        >
-          下一题
-        </a-button>
-        
-        <a-popconfirm
-          v-else
-          title="确定要提交答案吗？"
-          ok-text="确定"
-          cancel-text="取消"
-          @confirm="submitAssessment"
-        >
+        <div class="nav-side nav-right">
           <a-button 
+            v-if="store.currentQuestionIndex < store.totalQuestions - 1"
             type="primary"
+            @click="handleNext"
             :disabled="!store.hasAnsweredCurrent"
           >
-            完成测试
+            下一题
           </a-button>
-        </a-popconfirm>
+          
+          <a-popconfirm
+            v-else
+            title="确定要提交答案吗？"
+            ok-text="确定"
+            cancel-text="取消"
+            @confirm="submitAssessment"
+          >
+            <a-button 
+              type="primary"
+              :disabled="!store.hasAnsweredCurrent"
+            >
+              完成测试
+            </a-button>
+          </a-popconfirm>
+        </div>
       </div>
 
       <!-- 侧边答题卡 -->
@@ -111,7 +121,7 @@
       @close="showAnswerSheet = false"
     >
       <div class="answer-sheet">
-        <a-card-grid 
+        <div 
           v-for="(answered, index) in answeredStatus" 
           :key="index"
           class="answer-grid"
@@ -119,7 +129,7 @@
           @click="goToQuestion(index)"
         >
           {{ index + 1 }}
-        </a-card-grid>
+        </div>
       </div>
     </a-drawer>
   </div>
@@ -128,6 +138,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { CloseOutlined } from '@ant-design/icons-vue'
 import { useAssessmentStore } from '../stores/assessment'
 import { questions } from '../data/questions'
 
@@ -183,6 +194,11 @@ function handlePrevious() {
   selectedAnswer.value = assessmentStore.userAnswers[currentQuestion.id]
 }
 
+// 退出答题，返回首页
+function handleExit() {
+  router.push('/')
+}
+
 // 兼容 Vue 2.6 语法
 const store = assessmentStore
 </script>
@@ -196,6 +212,26 @@ const store = assessmentStore
 .assessment-card {
   max-width: 800px;
   margin: 0 auto;
+}
+
+.assessment-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.exit-btn {
+  font-size: 14px;
+  color: #ff4d4f;
+  border-color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.06);
+  transition: all 0.3s;
+}
+
+.exit-btn:hover {
+  color: #fff;
+  border-color: #ff4d4f;
+  background: #ff4d4f;
 }
 
 .progress-section {
@@ -272,13 +308,29 @@ const store = assessmentStore
 
 .navigation-section {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 16px;
   padding-top: 24px;
   border-top: 1px solid #e8e8e8;
 }
 
+.nav-side {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.nav-left {
+  justify-content: flex-start;
+}
+
+.nav-right {
+  justify-content: flex-end;
+}
+
 .question-dots {
+  flex: 0 1 auto;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -317,8 +369,7 @@ const store = assessmentStore
 }
 
 .answer-grid {
-  width: 48px;
-  height: 48px;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -327,6 +378,9 @@ const store = assessmentStore
   cursor: pointer;
   transition: all 0.3s;
   font-weight: 500;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.75);
+  user-select: none;
 }
 
 .answer-grid:hover {
@@ -342,6 +396,19 @@ const store = assessmentStore
   background: #1890ff;
   color: #fff;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.5);
+}
+
+/* 隐藏答题卡抽屉区域的滚动条，保持界面整洁 */
+:deep(.ant-drawer-body) {
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+:deep(.ant-drawer-body)::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 @media (max-width: 768px) {

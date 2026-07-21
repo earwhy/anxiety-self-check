@@ -10,19 +10,27 @@
       <!-- 主要功能卡片 -->
       <a-row :gutter="[24, 24]" class="card-row">
         <a-col :xs="24" :sm="12">
-          <a-card class="feature-card start-card" hoverable @click="startAssessment">
-            <template #cover>
-              <div class="card-icon">📋</div>
-            </template>
-            <a-card-meta title="开始评估" description="30 道专业测试题，全面评估您的焦虑状态" />
+          <a-card class="feature-card start-card" hoverable :bordered="false" @click="startAssessment">
+            <div class="feature-inner">
+              <div class="feature-icon start-icon">📋</div>
+              <div class="feature-text">
+                <h3 class="feature-title">开始评估</h3>
+                <p class="feature-desc">30 道专业测试题，全面评估您的焦虑状态</p>
+              </div>
+              <span class="feature-arrow">→</span>
+            </div>
           </a-card>
         </a-col>
         <a-col :xs="24" :sm="12">
-          <a-card class="feature-card history-card" hoverable @click="viewHistory">
-            <template #cover>
-              <div class="card-icon">📊</div>
-            </template>
-            <a-card-meta title="历史记录" description="查看历史测试记录，追踪焦虑变化趋势" />
+          <a-card class="feature-card history-card" hoverable :bordered="false" @click="viewHistory">
+            <div class="feature-inner">
+              <div class="feature-icon history-icon">📊</div>
+              <div class="feature-text">
+                <h3 class="feature-title">历史记录</h3>
+                <p class="feature-desc">查看历史测试记录，追踪焦虑变化趋势</p>
+              </div>
+              <span class="feature-arrow">→</span>
+            </div>
           </a-card>
         </a-col>
       </a-row>
@@ -165,30 +173,73 @@ function showScienceDetail() {
 
 .feature-card {
   cursor: pointer;
-  transition: all 0.3s;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
-.card-icon {
-  font-size: 64px;
-  text-align: center;
-  padding: 24px 0;
+.feature-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-.start-card .card-icon {
+.feature-icon {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  line-height: 1;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.start-icon {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
-.history-card .card-icon {
+.history-icon {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+}
+
+.feature-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.88);
+  margin: 0 0 6px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.55);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.feature-arrow {
+  flex-shrink: 0;
+  font-size: 22px;
+  color: rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-arrow {
+  color: #1890ff;
+  transform: translateX(4px);
 }
 
 .info-card,
